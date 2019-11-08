@@ -47,9 +47,33 @@ public class ShowSpeed extends EasyGraphics {
 		int timescaling = Integer.parseInt(getText("Tidsskalering"));
 				
 		// TODO - START
-		
-		throw new UnsupportedOperationException(TODO.method());
-	
+        int windowHeight = 2 * MARGIN + BARHEIGHT;
+        int d = 0;
+        double maxSpeed, averageSpeed;
+        double[] speeds = gpscomputer.speeds();
+
+        maxSpeed = GPSUtils.findMax(speeds);
+        averageSpeed = gpscomputer.averageSpeed();
+
+        setColor(0,0,255);
+
+        for (int i = 0; i < N; i++) {
+            GPSPoint gpspoint1 = gpspoints[i];
+            GPSPoint gpspoint2 = gpspoints[i+1];
+
+            //Skalerer hoeyde med x = BARHEIGHT/maxSpeed
+            int height = (int) (GPSUtils.speed(gpspoint1, gpspoint2) * (BARHEIGHT / maxSpeed));
+            int minY = windowHeight - MARGIN - height;
+            int minX = MARGIN + d;
+
+            if (height < 0) {
+                height = 0;
+            }
+
+            drawRectangle(minX , minY, 0, height);
+            d += 2;
+            pause((gpspoint2.getTime() - gpspoint1.getTime()) * 1000 / timescaling);
+        }
 		// TODO - SLUTT
 	}
 }
